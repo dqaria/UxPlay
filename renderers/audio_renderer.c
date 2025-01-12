@@ -69,8 +69,8 @@ static gboolean check_plugins (void)
 {
     gboolean ret;
     GstRegistry *registry;
-    const gchar *needed[] = { "app", "libav", "playback", "autodetect", "videoparsersbad",  NULL};
-    const gchar *gst[] = {"plugins-base", "libav", "plugins-base", "plugins-good", "plugins-bad", NULL};
+    const gchar *needed[] = { "app", "playback", "autodetect", "videoparsersbad",  NULL};
+    const gchar *gst[] = {"plugins-base", "plugins-base", "plugins-good", "plugins-bad", NULL};
     registry = gst_registry_get ();
     ret = TRUE;
     for (int i = 0; i < g_strv_length ((gchar **) needed); i++) {
