@@ -60,7 +60,6 @@
 #include "lib/logger.h"
 #include "lib/dnssd.h"
 #include "renderers/video_renderer.h"
-#include "renderers/audio_renderer.h"
 
 #define VERSION "1.71"
 
@@ -1579,7 +1578,6 @@ extern "C" void conn_destroy (void *cls) {
     if (open_connections == 0) {
         remote_clock_offset = 0;
         if (use_audio) {
-            audio_renderer_stop();
         }
         if (dacpfile.length()) {
             remove (dacpfile.c_str());
@@ -1648,7 +1646,6 @@ extern "C" void audio_process (void *cls, raop_ntp_t *ntp, audio_decode_struct *
         default:
             break;
         }
-        audio_renderer_render_buffer(data->data, &(data->data_len), &(data->seqnum), &(data->ntp_time_remote));
     }
 }
 
@@ -1680,7 +1677,6 @@ extern "C" void video_resume (void *cls) {
 
 extern "C" void audio_flush (void *cls) {
     if (use_audio) {
-        audio_renderer_flush();
     }
 }
 
@@ -1732,7 +1728,6 @@ extern "C" void audio_set_volume (void *cls, float volume) {
 	/* conversion from (gain) decibels to GStreamer's linear volume scale */
         gst_volume = pow(10.0, 0.05*db);
     }
-    audio_renderer_set_volume(gst_volume);
 }
 
 extern "C" void audio_get_format (void *cls, unsigned char *ct, unsigned short *spf, bool *usingScreen, bool *isMedia, uint64_t *audioFormat) {
@@ -1756,7 +1751,6 @@ extern "C" void audio_get_format (void *cls, unsigned char *ct, unsigned short *
     audio_type = type;
     
     if (use_audio) {
-      audio_renderer_start(ct);
     }
 
     if (coverart_filename.length()) {
@@ -2256,7 +2250,6 @@ int main (int argc, char *argv[]) {
     logger_set_level(render_logger, log_level);
 
     if (use_audio) {
-      audio_renderer_init(render_logger, audiosink.c_str(), &audio_sync, &video_sync);
     } else {
         LOGI("audio_disabled");
     }
@@ -2326,7 +2319,6 @@ int main (int argc, char *argv[]) {
         } else {
             raop_stop(raop);
         }
-        if (use_audio) audio_renderer_stop();
         if (use_video && (close_window || preserve_connections)) {
             video_renderer_destroy();
             if (!preserve_connections) {
@@ -2359,7 +2351,6 @@ int main (int argc, char *argv[]) {
     }
     cleanup:
     if (use_audio) {
-        audio_renderer_destroy();
     }
     if (use_video)  {
         video_renderer_destroy();
