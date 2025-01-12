@@ -60,6 +60,8 @@
 #include "lib/logger.h"
 #include "lib/dnssd.h"
 #include "renderers/video_renderer.h"
+#include "renderers/audio_renderer.h"
+
 
 #define VERSION "1.71"
 
